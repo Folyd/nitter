@@ -1,11 +1,20 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-import asyncdispatch, strutils, times, options
+import asyncdispatch, strutils, times, options, re
 import jester
 import router_utils
 import ".."/[types, redis_cache, api]
 
 proc createJsonApiRouter*(cfg: Config) =
   router jsonApi:
+    proc stripHtml(text: string): string =
+      # Remove HTML tags but keep the text content
+      result = text
+      # First pass: remove opening tags
+      result = result.replace(re"<a[^>]*>", "")
+      result = result.replace(re"</a>", "")
+      # Remove any other HTML tags
+      result = result.replace(re"<[^>]+>", "")
+    
     proc userToJson(user: User): JsonNode =
       result = %*{
         "id": user.id,
@@ -13,7 +22,7 @@ proc createJsonApiRouter*(cfg: Config) =
         "fullname": user.fullname,
         "location": user.location,
         "website": user.website,
-        "bio": user.bio,
+        "bio": stripHtml(user.bio),
         "userPic": user.userPic,
         "banner_url": user.banner,
         "following": user.following,
