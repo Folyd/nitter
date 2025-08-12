@@ -1,0 +1,30 @@
+[Unit]
+Description=Nitter (An alternative Twitter front-end)
+After=syslog.target
+After=network.target
+After=redis.service redis-server.service
+
+[Service]
+Type=simple
+
+# set user and group
+User=geddle
+Group=geddle
+
+# configure location
+WorkingDirectory=/home/geddle/github/nitter
+ExecStart=/home/geddle/github/nitter/nitter
+
+# restart policy
+Restart=always
+RestartSec=15
+
+# security hardening
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/geddle/github/nitter
+
+[Install]
+WantedBy=multi-user.target
