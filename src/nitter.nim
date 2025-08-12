@@ -10,7 +10,7 @@ import types, config, prefs, formatters, redis_cache, http_pool, auth
 import views/[general, about]
 import routes/[
   preferences, timeline, status, media, search, rss, list, debug,
-  unsupported, embed, resolver, router_utils]
+  unsupported, embed, resolver, router_utils, json_api]
 
 const instancesUrl = "https://github.com/zedeus/nitter/wiki/Instances"
 const issuesUrl = "https://github.com/zedeus/nitter/issues"
@@ -54,6 +54,7 @@ createMediaRouter(cfg)
 createEmbedRouter(cfg)
 createRssRouter(cfg)
 createDebugRouter(cfg)
+createJsonApiRouter(cfg)
 
 settings:
   port = Port(cfg.port)
@@ -103,6 +104,7 @@ routes:
       &"Instance has no auth tokens, or is fully rate limited.<br>Use {link} or try again later.", cfg)
 
   extend rss, ""
+  extend jsonApi, ""
   extend status, ""
   extend search, ""
   extend timeline, ""
