@@ -120,11 +120,17 @@ proc getCardTitle*(js: JsonNode; kind: CardKind): string =
     result = js{"cta1"}.getStrVal
 
 proc getBanner*(js: JsonNode): string =
-  let url = js{"profile_banner_url"}.getImageStr
+  # Try camelCase first (GraphQL response), then snake_case (REST API)
+  var url = js{"profileBannerUrl"}.getImageStr
+  if url.len == 0:
+    url = js{"profile_banner_url"}.getImageStr
   if url.len > 0:
     return url & "/1500x500"
 
-  let color = js{"profile_link_color"}.getStr
+  # Try camelCase first, then snake_case for color
+  var color = js{"profileLinkColor"}.getStr
+  if color.len == 0:
+    color = js{"profile_link_color"}.getStr
   if color.len > 0:
     return '#' & color
 

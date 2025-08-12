@@ -7,6 +7,7 @@ import types, api
 const
   redisNil = "\0\0"
   baseCacheTime = 60 * 60
+  userCacheTime = 60 * 60 * 24  # 1 day for user profiles
 
 var
   pool: RedisPool
@@ -93,7 +94,7 @@ proc cache*(data: User) {.async.} =
   let name = toLower(data.username)
   await cacheUserId(name, data.id)
   pool.withAcquire(r):
-    dawait r.setEx(name.userKey, baseCacheTime, compress(toFlatty(data)))
+    dawait r.setEx(name.userKey, userCacheTime, compress(toFlatty(data)))
 
 proc cache*(data: Tweet) {.async.} =
   if data.isNil or data.id == 0: return
@@ -144,7 +145,7 @@ proc getCachedUsername*(userId: string): Future[string] {.async.} =
   else:
     let user = await getGraphUserById(userId)
     result = user.username
-    await setEx(key, baseCacheTime, result)
+    await setEx(key, userCacheTime, result)
     if result.len > 0 and user.id.len > 0:
       await all(cacheUserId(result, user.id), cache(user))
 

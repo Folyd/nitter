@@ -15,7 +15,7 @@ proc createJsonApiRouter*(cfg: Config) =
         "website": user.website,
         "bio": user.bio,
         "userPic": user.userPic,
-        "banner": user.banner,
+        "banner_url": user.banner,
         "following": user.following,
         "followers": user.followers,
         "tweets": user.tweets,
