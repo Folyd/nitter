@@ -44,8 +44,8 @@ proc createJsonApiRouter*(cfg: Config) =
         return newJNull()
       
       result = %*{
-        "id": tweet.id,
-        "threadId": tweet.threadId,
+        "id": $tweet.id,  # Convert to string to preserve precision for large int64
+        "threadId": $tweet.threadId,  # Convert to string to preserve precision
         "text": tweet.text,
         "time": tweet.time.format("yyyy-MM-dd'T'HH:mm:ss'Z'"),
         "hasThread": tweet.hasThread,
@@ -58,7 +58,7 @@ proc createJsonApiRouter*(cfg: Config) =
       }
       
       if tweet.replyId != 0:
-        result["replyId"] = %tweet.replyId
+        result["replyId"] = %($tweet.replyId)  # Convert to string to preserve precision
       
       if tweet.reply.len > 0:
         result["reply"] = %tweet.reply

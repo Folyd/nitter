@@ -320,6 +320,8 @@ proc parseGraphTweet(js: JsonNode; isLegacy=false): Tweet =
     jsCard["binding_values"] = values
 
   result = parseTweet(js{"legacy"}, jsCard)
+  # Override with rest_id which is the actual Twitter URL-compatible ID
+  # (legacy.id_str is empty in GraphQL responses)
   result.id = js{"rest_id"}.getId
   result.user = parseGraphUser(js{"core"})
 
